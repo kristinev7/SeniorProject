@@ -114,7 +114,7 @@ main {
     margin: 0 auto;
     background-color: rgb(255, 95, 95);
     width: max-content;
-    padding: 1rem;
+    padding: 0.5rem;
     border-radius: 5px;
 }
 .Grid {
