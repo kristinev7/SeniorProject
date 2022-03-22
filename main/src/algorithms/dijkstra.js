@@ -35,13 +35,13 @@ const getUnvisitedNeighbors = (node, grid) => {
 };
 
 export const getNodesInShortestPathOrder = (finishNode) => {
-    const nodesInShortestPathOrder = [];
+    const shortestPathOrder = [];
     let currentNode = finishNode;
     while (currentNode !== null) {
-        nodesInShortestPathOrder.unshift(currentNode);
+        shortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }
-    return nodesInShortestPathOrder;
+    return shortestPathOrder;
 };
 
 export const dijkstra = (grid, startNode, endNode) => {
