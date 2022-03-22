@@ -73,51 +73,67 @@ export default function Grid({
     };
 
     const animateShortestPath = (nodesInShortestPathOrder) => {
-        for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
-            const node = nodesInShortestPathOrder[i];
-            setTimeout(() => {
-                document.getElementById(
-                    `${gridName}-${node.row}-${node.col}`,
-                ).className = "node node-shortest-path";
-            }, 10 * i);
-        }
-        setVisualize(false);
-        setIsReady(false);
+        return new Promise((resolve, reject) => {
+            let i = 0;
+            let interval = setInterval(() => {
+                if (i < nodesInShortestPathOrder.length) {
+                    const node = nodesInShortestPathOrder[i];
+                    document.getElementById(
+                        `${gridName}-${node.row}-${node.col}`,
+                    ).className = "node node-shortest-path";
+                }
+                i++;
+                if (i >= nodesInShortestPathOrder.length) {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, 20);
+        });
+        // setVisualize(false);
+        // setIsReady(false);
     };
 
-    const animate = async (visitedNodesInOrder, nodesInShortestPath) => {
-        for (let i = 0; i <= visitedNodesInOrder.length; i++) {
-            if (i === visitedNodesInOrder.length) {
-                setTimeout(() => {
-                    animateShortestPath(nodesInShortestPath);
-                }, 10 * i);
-                return;
-            }
-            const node = visitedNodesInOrder[i];
-            setTimeout(() => {
-                document.getElementById(
-                    `${gridName}-${node.row}-${node.col}`,
-                ).className = "node node-visited";
-            }, 10 * i);
-        }
+    const animate = (visitedNodesInOrder) => {
+        return new Promise((resolve, reject) => {
+            let i = 0;
+            let interval = setInterval(() => {
+                if (visitedNodesInOrder && i < visitedNodesInOrder.length) {
+                    const node = visitedNodesInOrder[i];
+                    document.getElementById(
+                        `${gridName}-${node.row}-${node.col}`,
+                    ).className = "node node-visited";
+                }
+                i++;
+                if (visitedNodesInOrder && i >= visitedNodesInOrder.length) {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, 20);
+        });
     };
 
-    const visualizeDijkstra = () => {
+    const visualizeDijkstra = async () => {
         const startNode = grid[startNodeRows][startNodeCols];
         const endNode = grid[endNodeRows][endNodeCols];
         const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
         const nodesInShortestPath = getNodesInShortestPathOrder(endNode);
 
-        animate(visitedNodesInOrder, nodesInShortestPath);
+        await animate(visitedNodesInOrder);
+        await animateShortestPath(nodesInShortestPath);
+
+        return;
     };
 
-    const visualizeAStar = () => {
+    const visualizeAStar = async () => {
         const startNode = grid[startNodeRows][startNodeCols];
         const endNode = grid[endNodeRows][endNodeCols];
         const visitedNodesInOrder = astar(grid, startNode, endNode);
         const nodesInShortestPath = getNodesInShortestPathOrderAStar(endNode);
 
-        animate(visitedNodesInOrder, nodesInShortestPath);
+        await animate(visitedNodesInOrder);
+        await animateShortestPath(nodesInShortestPath);
+
+        return;
     };
 
     const visualizeAlgo = (algorithm) => {
