@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Dropdown from "./Dropdown";
 import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 import { astar, getNodesInShortestPathOrderAStar } from "../algorithms/astar";
+import { bfs, getNodesInShortestPathOrderBFS } from "../algorithms/bfs";
 
 const startNodeRows = 2;
 const startNodeCols = 10;
@@ -86,11 +87,11 @@ export default function Grid({
                 if (i >= nodesInShortestPathOrder.length) {
                     clearInterval(interval);
                     resolve();
+                    setVisualize(false);
+                    setIsReady(false);
                 }
             }, 20);
         });
-        // setVisualize(false);
-        // setIsReady(false);
     };
 
     const animate = (visitedNodesInOrder) => {
@@ -136,6 +137,17 @@ export default function Grid({
         return;
     };
 
+    const visualizeBFS = async () => {
+        const startNode = grid[startNodeRows][startNodeCols];
+        const endNode = grid[endNodeRows][endNodeCols];
+        const visitedNodesInOrder = bfs(grid, startNode, endNode);
+        const nodesInShortestPath = getNodesInShortestPathOrderBFS(endNode);
+
+        await animate(visitedNodesInOrder);
+        await animateShortestPath(nodesInShortestPath);
+
+        return;
+    };
     const visualizeAlgo = (algorithm) => {
         switch (algorithm) {
             case "Dijkstra":
@@ -144,6 +156,10 @@ export default function Grid({
 
             case "A* Pathfinding":
                 visualizeAStar();
+                break;
+            case "Breath First Search":
+                visualizeBFS();
+                break;
             default:
                 break;
         }
@@ -153,13 +169,32 @@ export default function Grid({
         visualizeAlgo(algorithm);
     }
 
+    const clearGrid = () => {
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid[row].length; col++) {
+                if (grid[row][col].startNode || grid[row][col].endNode)
+                    continue;
+                document.getElementById(`${gridName}-${row}-${col}`).className =
+                    "node";
+            }
+        }
+
+        let newGrid = getInitialGrid();
+        setGrid(newGrid);
+    };
+
     return (
         <>
-            <Dropdown
-                setAlgorithm={setAlgorithm}
-                visualize={visualize}
-                setIsReady={setIsReady}
-            />
+            <div className="Grid-Controller">
+                <Dropdown
+                    setAlgorithm={setAlgorithm}
+                    visualize={visualize}
+                    setIsReady={setIsReady}
+                />
+                <button className="btn" onClick={clearGrid}>
+                    Clear Grid
+                </button>
+            </div>
             <div className="Grid">
                 {grid.map((row, i) => {
                     return (
