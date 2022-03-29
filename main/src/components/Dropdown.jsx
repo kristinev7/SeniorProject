@@ -31,7 +31,7 @@ export default function Dropdown({ setAlgorithm, visualize, setIsReady }) {
     const handleSetValue = (val) => {
         setVal(val.title);
         setAlgorithm(val.title);
-        // setIsReady(true);
+        setIsReady(true);
         setIsOpen(!isOpen);
     };
 
