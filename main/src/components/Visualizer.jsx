@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "./Navbar";
 import Grid from "./Grid";
 import { FiAlertTriangle } from "react-icons/fi";
+import "./visualizer.css"
 
 export default function Visualizer() {
     const [visualize, setVisualize] = useState(false);
