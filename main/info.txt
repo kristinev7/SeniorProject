@@ -1,0 +1,22 @@
+Hi Team,
+
+I got the Webpage Routing going.
+
+Under the src/components folder:
+
+New components added that made the Routing easier to understand.
+
+Image folder is also added for easier accesss.
+
+We have about 3 pages: Home, Visualizer and Algo Information.
+
+I made a dummy for the Algo Information for Curtiss.
+
+Problems: I've been trying to figure out how I can get the webpage size to adjust.
+
+If you click on Visualizer link, the webpage is much bigger, but it isn't scrolling. 
+
+I haven't figured it out. 
+
+
+That is all for now.
