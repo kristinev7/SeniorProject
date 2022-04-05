@@ -19,4 +19,38 @@ If you click on Visualizer link, the webpage is much bigger, but it isn't scroll
 I haven't figured it out. 
 
 
-That is all for now.
+That is all for now. Thank you.
+
+Also some Git commands Information
+
+git clone: grabbing all the files
+
+git pull: merges changes/updates to my branch
+
+git status
+
+git checkout -b testbranch: creating a new branch and go to that branch
+
+gitk: shows the gui
+
+git add [folder/*]: * means all the files inside the folder
+
+git add: to add these files to commit
+
+git checkout: command to change branches/tags/commits
+
+git checkout main: switches to main branch
+
+MAKING A NEW REPO
+
+git init inside the new folder where work will be done
+
+git status
+
+git add [folder]
+
+git commit
+
+git remote add origin [git url]
+
+git push origin master
