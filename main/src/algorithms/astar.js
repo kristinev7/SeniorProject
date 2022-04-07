@@ -46,8 +46,6 @@ const updateUnvisitedNeighbors = (
                             ...node,
                             ...neighbor,
                         };
-                        console.log("hii", node, neighbor);
-                        console.log(a);
                         return a;
                     }
                     return node;
