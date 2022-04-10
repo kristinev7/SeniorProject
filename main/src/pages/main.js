@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import "../components/main.css";
 import Transition from "../components/Transition";
-import { Power2, gsap } from "gsap";
+import { gsap } from "gsap";
 
 export default function Main() {
     const main = gsap.timeline();
