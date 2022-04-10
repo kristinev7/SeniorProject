@@ -1,7 +1,8 @@
 import React from "react";
 import Visualizer from "./Visualizer";
-import {Link, useLocation, Outlet} from "react-router-dom";
+import { Link, useLocation, Outlet } from "react-router-dom";
 
+// where is this being used
 
 export function Home() {
     return (
@@ -15,11 +16,11 @@ export function Home() {
     );
 }
 
-export function About () {
+export function About() {
     return (
         <div>
             <h1>[About]</h1>
-            <nav >
+            <nav>
                 <Link to="services ">Services</Link>
                 <Link to="history ">Company History</Link>
                 <Link to="location ">Location </Link>
@@ -66,5 +67,5 @@ export function Whoops404() {
         <div>
             <h1> Resource not found at {location.pathname}!</h1>
         </div>
-    )
+    );
 }
