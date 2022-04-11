@@ -29,15 +29,16 @@ function Layout() {
     )
 
 };
+
 function App() {
     return (
         <Router>
-        <Layout />
-        <Routes>
-            <Route path ="/" element={<Main />}/>
-            <Route path="/algo" element={<Algo />}/>
-            <Route path ="/visualizer" element={<Visualizer />}/> 
-        </Routes>
+            <Layout />
+            <Routes>
+                <Route path ="/" element={<Main />}/>
+                <Route path="/algo" element={<Algo />}/>
+                <Route path ="/visualizer" element={<Visualizer />}/> 
+            </Routes>
         </Router>
     );
 }
