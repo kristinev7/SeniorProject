@@ -14,33 +14,15 @@ export default function Grid({
     setVisualize,
     visualize,
     gridName,
+    isAnimating,
+    setIsAnimating,
+    clearGrid,
+    getInitialGrid,
+    clearPath,
 }) {
     const [isMouseDown, setIsMouseDown] = useState(false);
     const [algorithm, setAlgorithm] = useState("");
     const [grid, setGrid] = useState([]);
-
-    const getInitialGrid = (numRows = 50, numCols = 20) => {
-        let initialGrid = [];
-
-        for (let row = 0; row < numRows; row++) {
-            let gridRow = [];
-            for (let col = 0; col < numCols; col++) {
-                gridRow.push({
-                    row,
-                    col,
-                    startNode: row === startNodeRows && col === startNodeCols,
-                    endNode: row === endNodeRows && col === endNodeCols,
-                    previousNode: null,
-                    distance: Infinity,
-                    isWall: false,
-                    isVisited: false,
-                });
-            }
-            initialGrid.push(gridRow);
-        }
-
-        return initialGrid;
-    };
 
     useEffect(() => {
         // this is hardcoded based on the values of the CSS height & weight properties of the Grid class.
@@ -49,6 +31,16 @@ export default function Grid({
 
         setGrid(initialGrid);
     }, []);
+
+    useEffect(() => {
+        if (!visualize) {
+            console.log("stop..");
+            return;
+        }
+        console.log("clearing path");
+        clearCurrentPath(grid, gridName);
+        visualizeAlgo(algorithm);
+    }, [visualize]);
 
     const handleMouseDown = (node) => {
         if (visualize) return;
@@ -86,9 +78,12 @@ export default function Grid({
                 i++;
                 if (i >= nodesInShortestPathOrder.length) {
                     clearInterval(interval);
-                    resolve();
+                    if (!algorithm) {
+                        setIsReady(false);
+                    }
                     setVisualize(false);
-                    setIsReady(false);
+                    setIsAnimating(false);
+                    resolve();
                 }
             }, 20);
         });
@@ -153,7 +148,6 @@ export default function Grid({
             case "Dijkstra":
                 visualizeDijkstra();
                 break;
-
             case "A* Pathfinding":
                 visualizeAStar();
                 break;
@@ -165,21 +159,13 @@ export default function Grid({
         }
     };
 
-    if (visualize) {
-        visualizeAlgo(algorithm);
-    }
+    const setNewGrid = (grid, gridName) => {
+        const newGrid = clearGrid(grid, gridName);
+        setGrid(newGrid);
+    };
 
-    const clearGrid = () => {
-        for (let row = 0; row < grid.length; row++) {
-            for (let col = 0; col < grid[row].length; col++) {
-                if (grid[row][col].startNode || grid[row][col].endNode)
-                    continue;
-                document.getElementById(`${gridName}-${row}-${col}`).className =
-                    "node";
-            }
-        }
-
-        let newGrid = getInitialGrid();
+    const clearCurrentPath = (grid, gridName) => {
+        const newGrid = clearPath(grid, gridName);
         setGrid(newGrid);
     };
 
@@ -191,8 +177,19 @@ export default function Grid({
                     visualize={visualize}
                     setIsReady={setIsReady}
                 />
-                <button className="btn" onClick={clearGrid}>
+                <button
+                    className="btn"
+                    onClick={() => setNewGrid(grid, gridName)}
+                    disabled={isAnimating}
+                >
                     Clear Grid
+                </button>
+                <button
+                    className="btn"
+                    onClick={() => clearCurrentPath(grid, gridName)}
+                    disabled={isAnimating}
+                >
+                    Clear Path
                 </button>
             </div>
             <div className="Grid">
