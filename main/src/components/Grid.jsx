@@ -4,6 +4,7 @@ import Modal from "./Modal";
 import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 import { astar, getNodesInShortestPathOrderAStar } from "../algorithms/astar";
 import { bfs, getNodesInShortestPathOrderBFS } from "../algorithms/bfs";
+import { dfs, getNodesInShortestPathOrderDFS } from "../algorithms/dfs";
 
 const startNodeRows = 2;
 const startNodeCols = 10;
@@ -167,6 +168,24 @@ export default function Grid({
 
         return;
     };
+
+    const visualizeDFS = async () => {
+        const startNode = grid[startNodeRows][startNodeCols];
+        const endNode = grid[endNodeRows][endNodeCols];
+        const visitedNodesInOrder = dfs(grid, startNode, endNode);
+        const nodesInShortestPath = getNodesInShortestPathOrderDFS(endNode);
+
+        shortestPathLength = nodesInShortestPath.length;
+        totalVisitedNodes = visitedNodesInOrder.length;
+
+        startTime = performance.now();
+        await animate(visitedNodesInOrder);
+        await animateShortestPath(nodesInShortestPath);
+        endTime = performance.now();
+
+        return;
+    };
+
     const visualizeAlgo = (algorithm) => {
         switch (algorithm) {
             case "Dijkstra":
@@ -177,6 +196,9 @@ export default function Grid({
                 break;
             case "Breath First Search":
                 visualizeBFS();
+                break;
+            case "Depth First Search":
+                visualizeDFS();
                 break;
             default:
                 break;

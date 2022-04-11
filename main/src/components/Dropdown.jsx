@@ -16,6 +16,9 @@ export default function Dropdown({ setAlgorithm, setIsReady, isAnimating }) {
         {
             title: "Breath First Search",
         },
+        {
+            title: "Depth First Search",
+        },
     ];
 
     const handleClick = () => {
