@@ -110,13 +110,12 @@ export const astar = (grid, startNode, endNode) => {
 
         // if no path return the explored nodes
         if (currentNode.distance === Infinity) return closedList;
+
         // if end goal is reached, return explored nodes
-        if (currentNode === endNode) {
-            return closedList;
-        }
+        if (currentNode === endNode) return closedList;
 
         // add current node to explored nodes
-        closedList.push(currentNode);
+        if (!currentNode.startNode) closedList.push(currentNode);
 
         // update the neighbors of our current node
         updateUnvisitedNeighbors(
@@ -132,8 +131,8 @@ export const astar = (grid, startNode, endNode) => {
 // get the nodes in the shortest path
 export const getNodesInShortestPathOrderAStar = (finishNode) => {
     const shortestPathOrder = [];
-    let currentNode = finishNode;
-    while (currentNode !== null) {
+    let currentNode = finishNode.previousNode;
+    while (!currentNode.startNode) {
         shortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }

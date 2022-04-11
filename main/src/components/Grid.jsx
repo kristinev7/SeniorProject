@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Dropdown from "./Dropdown";
+import Modal from "./Modal";
 import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 import { astar, getNodesInShortestPathOrderAStar } from "../algorithms/astar";
 import { bfs, getNodesInShortestPathOrderBFS } from "../algorithms/bfs";
@@ -8,6 +9,11 @@ const startNodeRows = 2;
 const startNodeCols = 10;
 const endNodeRows = 47;
 const endNodeCols = 10;
+
+let startTime = 0;
+let endTime = 0;
+let shortestPathLength = 0;
+let totalVisitedNodes = 0;
 
 export default function Grid({
     setIsReady,
@@ -23,6 +29,7 @@ export default function Grid({
     const [isMouseDown, setIsMouseDown] = useState(false);
     const [algorithm, setAlgorithm] = useState("");
     const [grid, setGrid] = useState([]);
+    const [isFinished, setIsFinished] = useState(false);
 
     useEffect(() => {
         // this is hardcoded based on the values of the CSS height & weight properties of the Grid class.
@@ -39,6 +46,7 @@ export default function Grid({
         }
         console.log("clearing path");
         clearCurrentPath(grid, gridName);
+        setIsFinished(false);
         visualizeAlgo(algorithm);
     }, [visualize]);
 
@@ -83,6 +91,7 @@ export default function Grid({
                     }
                     setVisualize(false);
                     setIsAnimating(false);
+                    setIsFinished(true);
                     resolve();
                 }
             }, 20);
@@ -114,8 +123,13 @@ export default function Grid({
         const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
         const nodesInShortestPath = getNodesInShortestPathOrder(endNode);
 
+        shortestPathLength = nodesInShortestPath.length;
+        totalVisitedNodes = visitedNodesInOrder.length;
+        console.log(nodesInShortestPath);
+        startTime = performance.now();
         await animate(visitedNodesInOrder);
         await animateShortestPath(nodesInShortestPath);
+        endTime = performance.now();
 
         return;
     };
@@ -126,8 +140,13 @@ export default function Grid({
         const visitedNodesInOrder = astar(grid, startNode, endNode);
         const nodesInShortestPath = getNodesInShortestPathOrderAStar(endNode);
 
+        shortestPathLength = nodesInShortestPath.length;
+        totalVisitedNodes = visitedNodesInOrder.length;
+
+        startTime = performance.now();
         await animate(visitedNodesInOrder);
         await animateShortestPath(nodesInShortestPath);
+        endTime = performance.now();
 
         return;
     };
@@ -138,8 +157,13 @@ export default function Grid({
         const visitedNodesInOrder = bfs(grid, startNode, endNode);
         const nodesInShortestPath = getNodesInShortestPathOrderBFS(endNode);
 
+        shortestPathLength = nodesInShortestPath.length;
+        totalVisitedNodes = visitedNodesInOrder.length;
+
+        startTime = performance.now();
         await animate(visitedNodesInOrder);
         await animateShortestPath(nodesInShortestPath);
+        endTime = performance.now();
 
         return;
     };
@@ -193,6 +217,16 @@ export default function Grid({
                 </button>
             </div>
             <div className="Grid">
+                {isFinished ? (
+                    <Modal
+                        time={(endTime - startTime).toFixed(4)}
+                        shortestPathLength={shortestPathLength}
+                        totalVisitedNodes={totalVisitedNodes}
+                        setIsFinished={setIsFinished}
+                    />
+                ) : (
+                    ""
+                )}
                 {grid.map((row, i) => {
                     return (
                         <div key={i}>
