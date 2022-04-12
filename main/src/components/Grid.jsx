@@ -1,45 +1,36 @@
 import React, { useState, useEffect } from "react";
 import Dropdown from "./Dropdown";
+import Modal from "./Modal";
 import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 import { astar, getNodesInShortestPathOrderAStar } from "../algorithms/astar";
+import { bfs, getNodesInShortestPathOrderBFS } from "../algorithms/bfs";
+import { dfs, getNodesInShortestPathOrderDFS } from "../algorithms/dfs";
 
 const startNodeRows = 2;
 const startNodeCols = 10;
 const endNodeRows = 47;
 const endNodeCols = 10;
 
+let startTime = 0;
+let endTime = 0;
+let shortestPathLength = 0;
+let totalVisitedNodes = 0;
+
 export default function Grid({
     setIsReady,
     setVisualize,
     visualize,
     gridName,
+    isAnimating,
+    setIsAnimating,
+    clearGrid,
+    getInitialGrid,
+    clearPath,
 }) {
     const [isMouseDown, setIsMouseDown] = useState(false);
     const [algorithm, setAlgorithm] = useState("");
     const [grid, setGrid] = useState([]);
-
-    const getInitialGrid = (numRows = 50, numCols = 20) => {
-        let initialGrid = [];
-
-        for (let row = 0; row < numRows; row++) {
-            let gridRow = [];
-            for (let col = 0; col < numCols; col++) {
-                gridRow.push({
-                    row,
-                    col,
-                    startNode: row === startNodeRows && col === startNodeCols,
-                    endNode: row === endNodeRows && col === endNodeCols,
-                    previousNode: null,
-                    distance: Infinity,
-                    isWall: false,
-                    isVisited: false,
-                });
-            }
-            initialGrid.push(gridRow);
-        }
-
-        return initialGrid;
-    };
+    const [isFinished, setIsFinished] = useState(false);
 
     useEffect(() => {
         // this is hardcoded based on the values of the CSS height & weight properties of the Grid class.
@@ -48,6 +39,17 @@ export default function Grid({
 
         setGrid(initialGrid);
     }, []);
+
+    useEffect(() => {
+        if (!visualize) {
+            console.log("stop..");
+            return;
+        }
+        console.log("clearing path");
+        clearCurrentPath(grid, gridName);
+        setIsFinished(false);
+        visualizeAlgo(algorithm);
+    }, [visualize]);
 
     const handleMouseDown = (node) => {
         if (visualize) return;
@@ -73,51 +75,115 @@ export default function Grid({
     };
 
     const animateShortestPath = (nodesInShortestPathOrder) => {
-        for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
-            const node = nodesInShortestPathOrder[i];
-            setTimeout(() => {
-                document.getElementById(
-                    `${gridName}-${node.row}-${node.col}`,
-                ).className = "node node-shortest-path";
-            }, 10 * i);
-        }
-        setVisualize(false);
-        setIsReady(false);
+        return new Promise((resolve, reject) => {
+            let i = 0;
+            let interval = setInterval(() => {
+                if (i < nodesInShortestPathOrder.length) {
+                    const node = nodesInShortestPathOrder[i];
+                    document.getElementById(
+                        `${gridName}-${node.row}-${node.col}`,
+                    ).className = "node node-shortest-path";
+                }
+                i++;
+                if (i >= nodesInShortestPathOrder.length) {
+                    clearInterval(interval);
+                    if (!algorithm) {
+                        setIsReady(false);
+                    }
+                    setVisualize(false);
+                    setIsAnimating(false);
+                    setIsFinished(true);
+                    resolve();
+                }
+            }, 20);
+        });
     };
 
-    const animate = async (visitedNodesInOrder, nodesInShortestPath) => {
-        for (let i = 0; i <= visitedNodesInOrder.length; i++) {
-            if (i === visitedNodesInOrder.length) {
-                setTimeout(() => {
-                    animateShortestPath(nodesInShortestPath);
-                }, 10 * i);
-                return;
-            }
-            const node = visitedNodesInOrder[i];
-            setTimeout(() => {
-                document.getElementById(
-                    `${gridName}-${node.row}-${node.col}`,
-                ).className = "node node-visited";
-            }, 10 * i);
-        }
+    const animate = (visitedNodesInOrder) => {
+        return new Promise((resolve, reject) => {
+            let i = 0;
+            let interval = setInterval(() => {
+                if (visitedNodesInOrder && i < visitedNodesInOrder.length) {
+                    const node = visitedNodesInOrder[i];
+                    document.getElementById(
+                        `${gridName}-${node.row}-${node.col}`,
+                    ).className = "node node-visited";
+                }
+                i++;
+                if (visitedNodesInOrder && i >= visitedNodesInOrder.length) {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, 20);
+        });
     };
 
-    const visualizeDijkstra = () => {
+    const visualizeDijkstra = async () => {
         const startNode = grid[startNodeRows][startNodeCols];
         const endNode = grid[endNodeRows][endNodeCols];
         const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
         const nodesInShortestPath = getNodesInShortestPathOrder(endNode);
 
-        animate(visitedNodesInOrder, nodesInShortestPath);
+        shortestPathLength = nodesInShortestPath.length;
+        totalVisitedNodes = visitedNodesInOrder.length;
+        console.log(nodesInShortestPath);
+        startTime = performance.now();
+        await animate(visitedNodesInOrder);
+        await animateShortestPath(nodesInShortestPath);
+        endTime = performance.now();
+
+        return;
     };
 
-    const visualizeAStar = () => {
+    const visualizeAStar = async () => {
         const startNode = grid[startNodeRows][startNodeCols];
         const endNode = grid[endNodeRows][endNodeCols];
         const visitedNodesInOrder = astar(grid, startNode, endNode);
         const nodesInShortestPath = getNodesInShortestPathOrderAStar(endNode);
 
-        animate(visitedNodesInOrder, nodesInShortestPath);
+        shortestPathLength = nodesInShortestPath.length;
+        totalVisitedNodes = visitedNodesInOrder.length;
+
+        startTime = performance.now();
+        await animate(visitedNodesInOrder);
+        await animateShortestPath(nodesInShortestPath);
+        endTime = performance.now();
+
+        return;
+    };
+
+    const visualizeBFS = async () => {
+        const startNode = grid[startNodeRows][startNodeCols];
+        const endNode = grid[endNodeRows][endNodeCols];
+        const visitedNodesInOrder = bfs(grid, startNode, endNode);
+        const nodesInShortestPath = getNodesInShortestPathOrderBFS(endNode);
+
+        shortestPathLength = nodesInShortestPath.length;
+        totalVisitedNodes = visitedNodesInOrder.length;
+
+        startTime = performance.now();
+        await animate(visitedNodesInOrder);
+        await animateShortestPath(nodesInShortestPath);
+        endTime = performance.now();
+
+        return;
+    };
+
+    const visualizeDFS = async () => {
+        const startNode = grid[startNodeRows][startNodeCols];
+        const endNode = grid[endNodeRows][endNodeCols];
+        const visitedNodesInOrder = dfs(grid, startNode, endNode);
+        const nodesInShortestPath = getNodesInShortestPathOrderDFS(endNode);
+
+        shortestPathLength = nodesInShortestPath.length;
+        totalVisitedNodes = visitedNodesInOrder.length;
+
+        startTime = performance.now();
+        await animate(visitedNodesInOrder);
+        await animateShortestPath(nodesInShortestPath);
+        endTime = performance.now();
+
+        return;
     };
 
     const visualizeAlgo = (algorithm) => {
@@ -125,26 +191,64 @@ export default function Grid({
             case "Dijkstra":
                 visualizeDijkstra();
                 break;
-
             case "A* Pathfinding":
                 visualizeAStar();
+                break;
+            case "Breath First Search":
+                visualizeBFS();
+                break;
+            case "Depth First Search":
+                visualizeDFS();
+                break;
             default:
                 break;
         }
     };
 
-    if (visualize) {
-        visualizeAlgo(algorithm);
-    }
+    const setNewGrid = (grid, gridName) => {
+        const newGrid = clearGrid(grid, gridName);
+        setGrid(newGrid);
+    };
+
+    const clearCurrentPath = (grid, gridName) => {
+        const newGrid = clearPath(grid, gridName);
+        setGrid(newGrid);
+    };
 
     return (
         <>
-            <Dropdown
-                setAlgorithm={setAlgorithm}
-                visualize={visualize}
-                setIsReady={setIsReady}
-            />
+            <div className="Grid-Controller">
+                <Dropdown
+                    setAlgorithm={setAlgorithm}
+                    visualize={visualize}
+                    setIsReady={setIsReady}
+                />
+                <button
+                    className="btn"
+                    onClick={() => setNewGrid(grid, gridName)}
+                    disabled={isAnimating}
+                >
+                    Clear Grid
+                </button>
+                <button
+                    className="btn"
+                    onClick={() => clearCurrentPath(grid, gridName)}
+                    disabled={isAnimating}
+                >
+                    Clear Path
+                </button>
+            </div>
             <div className="Grid">
+                {isFinished ? (
+                    <Modal
+                        time={(endTime - startTime).toFixed(4)}
+                        shortestPathLength={shortestPathLength}
+                        totalVisitedNodes={totalVisitedNodes}
+                        setIsFinished={setIsFinished}
+                    />
+                ) : (
+                    ""
+                )}
                 {grid.map((row, i) => {
                     return (
                         <div key={i}>

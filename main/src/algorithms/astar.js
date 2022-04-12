@@ -1,77 +1,62 @@
-// heuristic function using euclidean distance
-function heuristic(p1, p2) {
+// manhattan heuristics
+function heuristic(neighbor, endNode) {
     let D = 0;
-    let dx = Math.abs(p1.row - p2.row);
-    let dy = Math.abs(p1.col - p2.col);
+    let dx = Math.abs(neighbor.row - endNode.row);
+    let dy = Math.abs(neighbor.col - endNode.col);
     return dx + dy; //Math.sqrt(dx * dx + dy * dy);
-}
-
-//function to remove from openSet array explored node.
-function removeFromArray(arr, elt) {
-    for (let i = arr.length - 1; i >= 0; i--) {
-        if (arr[i] === elt) {
-            arr.splice(i, 1);
-        }
-    }
-}
-
-function neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes) {
-    for (let node of unvisitedNodes) {
-        if (node.row === neighbour.row && node.col === neighbour.col) {
-            return false;
-        }
-    }
-    return true;
 }
 
 const updateUnvisitedNeighbors = (
     currentNode,
     endNode,
     grid,
-    openSet,
-    closedSet,
+    openList,
+    closedList,
 ) => {
     let neighbors = getNeighbors(grid, currentNode);
     for (let neighbor of neighbors) {
-        // if (!closedSet.includes(neighbor)) {
-        //     let tempG = currentNode.distance + 1;
-        //     let newPath = false;
-        //     //if its in the openSet
-        //     if (!openSet.includes(neighbor)) {
-        //         if (tempG < neighbor.distance) {
-        //             neighbor.distance = tempG;
-        //             newPath = true;
-        //         }
-        //         openSet.push(neighbor);
-        //     } else {
-        //         neighbor.distance = tempG;
-        //         newPath = true;
-        //         openSet.push(neighbor);
-        //     }
-        //     // calculate newPath
-        //     if (newPath) {
-        //         neighbor.heuristic = heuristic(neighbor, endNode);
-        //         neighbor.totalDistance =
-        //             neighbor.totalDistance + neighbor.heuristic;
-        //         neighbor.previousNode = currentNode;
-        //     }
-        // } // if !closeSet
-        let distance = currentNode.distance + 1;
-        if (neighbourNotInUnvisitedNodes(neighbor, openSet)) {
-            openSet.unshift(neighbor);
-            neighbor.distance = distance;
-            neighbor.totalDistance = distance + heuristic(neighbor, endNode);
+        if (neighbor.closed || neighbor.isWall) continue;
+
+        // tentative gscore
+        let gScore =
+            currentNode.g +
+            (neighbor.row - currentNode.row === 0 ||
+            neighbor.col - currentNode.col === 0
+                ? 1
+                : Math.SQRT2);
+
+        // find the best current path
+        if (!neighbor.isVisited || gScore < neighbor.g) {
             neighbor.previousNode = currentNode;
-        } else if (distance < neighbor.distance) {
-            neighbor.distance = distance;
-            neighbor.totalDistance = distance + heuristic(neighbor, endNode);
-            neighbor.previousNode = currentNode;
+            neighbor.g = gScore;
+            neighbor.h = neighbor.h || 1 * heuristic(neighbor, endNode);
+            neighbor.f = neighbor.g + neighbor.h;
+            neighbor.distance = currentNode.distance + 1;
+
+            if (!neighbor.isVisited) {
+                openList.push(neighbor);
+                neighbor.isVisited = true;
+            } else {
+                openList.map((node) => {
+                    if (
+                        node.row === neighbor.row &&
+                        node.col === neighbor.col
+                    ) {
+                        let a = {
+                            ...node,
+                            ...neighbor,
+                        };
+                        return a;
+                    }
+                    return node;
+                });
+            }
         }
     }
 };
 
 //neighbors of currentNode
-function getNeighbors(grid, node, diagonals = true) {
+function getNeighbors(grid, node, diagonals = false) {
     const neighbors = [];
     const { col, row } = node;
     if (row > 0) neighbors.push(grid[row - 1][col]);
@@ -99,95 +84,58 @@ function getNeighbors(grid, node, diagonals = true) {
     return neighbors.filter((neighbor) => !neighbor.isVisited);
 }
 
-const getCurrentNode = (openSet) => {
-    let closest;
-    let index;
-
-    for (let i = 0; i < openSet.length; i++) {
-        if (!closest || closest.totalDistance > openSet[i].totalDistance) {
-            closest = openSet[i];
-            index = i;
-        } else if (closest.totalDistance === openSet[i].totalDistance) {
-            if (closest.heuristic > openSet[i].heuristic) {
-                closest = openSet[i];
-                index = i;
-            }
-        }
-    }
-
-    openSet.splice(index, 1);
-    return closest;
-};
-
-const sortByTotalDistance = (openSet) => {
-    openSet.sort((nodeA, nodeB) => nodeA.totalDistance - nodeB.totalDistance);
+const sortList = (openList) => {
+    openList.sort((nodeA, nodeB) => nodeA.f - nodeB.f);
 };
 
 export const astar = (grid, startNode, endNode) => {
-    let openSet = []; //nodes to be explored
-    let closedSet = []; //nodes already explored
+    let openList = []; //nodes to be explored
+    let closedList = []; //nodes already explored
+
+    // set initial properties of start node
     startNode.distance = 0;
-    startNode.heuristic = 0;
-    startNode.totalDistance = 0;
+    startNode.g = 0;
+    startNode.f = 0;
 
-    //loop through grid to give each cell fscore, gscore and hscore
-    // for (let x = 0; x < grid.length; x++) {
-    //     for (let y = 0; y < grid[x].length; y++) {
-    //         grid[x][y].f = 0; //fscore
-    //         grid[x][y].g = 0; //gscore: shortest distance from start to current node
-    //         grid[x][y].h = 0; //heuristic value the lower the better
-    //         grid[x][y].parent = null;
-    //         grid[x][y].previous = undefined;
-    //         grid[x][y].wall = false;
-    //     }
-    // }
-    // if (grid[x][y].wall === true) {
-    //     grid[x][y].wall = true;
-    // }
+    // add start node to nodes that have been explored
+    openList.push(startNode);
+    startNode.isVisited = true;
 
-    //put starting node in openSet to start exploring
-    //explore nodes in openSet
+    while (openList.length !== 0) {
+        // sort list in order of min to max fscore
+        sortList(openList);
+        // get the node with the lowest fscore
+        let currentNode = openList.shift();
+        currentNode.closed = true;
 
-    openSet.push(startNode);
-    while (openSet.length > 0) {
-        sortByTotalDistance(openSet);
-        let currentNode = openSet.shift();
-        //if the currentNode is the endNode then show the path
-        if (currentNode.isWall) continue;
-        if (currentNode.distance === Infinity) return closedSet;
-        if (currentNode === endNode) {
-            // showPath(currentNode);
-            // console.log("done");
-            return closedSet;
-        }
+        // if no path return the explored nodes
+        if (currentNode.distance === Infinity) return closedList;
 
-        // if the currentNode is not the endNode remove from openSet
-        // then put in closedSet
-        currentNode.isVisited = true;
-        closedSet.push(currentNode);
+        // if end goal is reached, return explored nodes
+        if (currentNode === endNode) return closedList;
 
-        // update the neighbors
+        // add current node to explored nodes
+        if (!currentNode.startNode) closedList.push(currentNode);
+
+        // update the neighbors of our current node
         updateUnvisitedNeighbors(
             currentNode,
             endNode,
             grid,
-            openSet,
-            closedSet,
+            openList,
+            closedList,
         );
-    } //if openSet
-    // else {
-    //     console.log("no solution");
-    // }
-    return closedSet;
+    }
 };
 
+// get the nodes in the shortest path
 export const getNodesInShortestPathOrderAStar = (finishNode) => {
-    const nodesInShortestPathOrder = [];
-    let currentNode = finishNode;
-    while (currentNode !== null) {
-        nodesInShortestPathOrder.unshift(currentNode);
+    const shortestPathOrder = [];
+    let currentNode = finishNode.previousNode;
+    while (!currentNode.startNode) {
+        shortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }
 
-    return nodesInShortestPathOrder;
+    return shortestPathOrder;
 };

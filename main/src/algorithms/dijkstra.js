@@ -35,27 +35,27 @@ const getUnvisitedNeighbors = (node, grid) => {
 };
 
 export const getNodesInShortestPathOrder = (finishNode) => {
-    const nodesInShortestPathOrder = [];
-    let currentNode = finishNode;
-    while (currentNode !== null) {
-        nodesInShortestPathOrder.unshift(currentNode);
+    const shortestPathOrder = [];
+    let currentNode = finishNode.previousNode;
+    while (!currentNode.startNode) {
+        shortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }
-    return nodesInShortestPathOrder;
+    return shortestPathOrder;
 };
 
 export const dijkstra = (grid, startNode, endNode) => {
     const visitedNodesInOrder = [];
     startNode.distance = 0;
     const unvisitedNodes = getAllNodes(grid);
-    while (!!unvisitedNodes.length) {
+    while (unvisitedNodes.length !== 0) {
         sortNodesByDistance(unvisitedNodes);
         const closestNode = unvisitedNodes.shift();
         if (closestNode.isWall) continue; // if the current node is a wall, go on to the next node
         if (closestNode.distance === Infinity) return visitedNodesInOrder; // if no path is found return nodes
-        closestNode.isVisited = true;
-        visitedNodesInOrder.push(closestNode);
         if (closestNode === endNode) return visitedNodesInOrder; // if the end node is reached
+        closestNode.isVisited = true;
+        if (!closestNode.startNode) visitedNodesInOrder.push(closestNode);
         updateUnvisitedNeighbors(closestNode, grid);
     }
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-export default function Dropdown({ setAlgorithm, visualize, setIsReady }) {
+export default function Dropdown({ setAlgorithm, setIsReady, isAnimating }) {
     const [isOpen, setIsOpen] = useState(false);
     const [val, setVal] = useState("");
     const ref = useRef(null);
@@ -12,6 +12,12 @@ export default function Dropdown({ setAlgorithm, visualize, setIsReady }) {
         },
         {
             title: "A* Pathfinding",
+        },
+        {
+            title: "Breath First Search",
+        },
+        {
+            title: "Depth First Search",
         },
     ];
 
@@ -38,12 +44,13 @@ export default function Dropdown({ setAlgorithm, visualize, setIsReady }) {
             document.removeEventListener("click", handleClickOutside, true);
         };
     });
+
     return (
         <div ref={ref} className="dropdown">
             <button
                 className="btn dropdown-toggle"
                 onClick={handleClick}
-                disabled={visualize}
+                disabled={isAnimating}
             >
                 {val ? val : "Choose Algorithm"}
                 <Chevron isOpen={isOpen} />
