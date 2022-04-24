@@ -4,7 +4,7 @@ import Grid from "../components/Grid";
 import { FiAlertTriangle } from "react-icons/fi";
 import "../components/visualizer.css";
 
-const startNodeRows = 2;
+const startNodeRows = 2; 
 const startNodeCols = 10;
 const endNodeRows = 47;
 const endNodeCols = 10;

@@ -1,9 +1,13 @@
 import React from "react";
 import "./App.css";
-import { Routes, Route, Link, Outlet } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, Outlet } from "react-router-dom";
 import Main from "../pages/main";
 import Visualizer from "../pages/Visualizer";
 import Algo from "../pages/Algo";
+import DFSInfo  from "./DFSInfo";
+import  BFSInfo  from "./BFSInfo";
+import  AstarInfo  from "./AstarInfo";
+import  DijkstraInfo  from "./DijkstraInfo";
 
 function Layout() {
     return (
@@ -30,13 +34,20 @@ function Layout() {
 }
 function App() {
     return (
-        <Routes>
-            <Route path="/" element={<Layout />}>
-                <Route index element={<Main />} />
-                <Route path="/algo" element={<Algo />} />
-                <Route path="/visualizer" element={<Visualizer />} />
-            </Route>
-        </Routes>
+        <Router>
+            <Routes>
+                <Route path="/" element={<Layout />}>
+                    <Route index element={<Main />} />
+                    <Route path="/visualizer" element={<Visualizer />} />
+                    <Route path="/algo" element={<Algo />}>
+                        <Route path="DijkstraInfo" element ={<DijkstraInfo/>}/>
+                        <Route path ="AstarInfo" element={<AstarInfo/>}/>
+                        <Route path = "DFSInfo" element={<DFSInfo/>} />
+                        <Route path = "BFSInfo" element={<BFSInfo/>}/> 
+                    </Route>
+                </Route>
+            </Routes>
+        </Router>
     );
 }
 

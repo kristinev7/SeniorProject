@@ -212,7 +212,7 @@ export default function Grid({
 
     const clearCurrentPath = (grid, gridName) => {
         const newGrid = clearPath(grid, gridName);
-        setGrid(newGrid);
+        setGrid(newGrid); 
     };
 
     return (

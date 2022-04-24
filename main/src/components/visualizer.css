@@ -24,7 +24,7 @@ body {
     padding: 1rem 0;
     margin: 0 auto;
     position: relative;
-    top: 150px;
+    top: 8px;
 }
 .nav-title {
     font-size: 2rem;
@@ -107,7 +107,7 @@ main {
     gap: 20px;
     flex-wrap: wrap;
     position:relative;
-    top:130px;
+    top:10px;
 }
 .error-msg {
     display: flex;

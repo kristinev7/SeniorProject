@@ -2,8 +2,10 @@ import React, { useEffect, useRef } from "react";
 import "../components/Algo.css";
 import gsap from "gsap";
 import Transition from "../components/Transition";
+// import "../components/AlgoLayout.css";
+import { Link, Outlet } from "react-router-dom";
 
-function Algo() {
+function Algo () {
     const algo = gsap.timeline();
     const algoh1 = useRef(null);
     const algoimg = useRef(null);
@@ -20,14 +22,27 @@ function Algo() {
             "-=3",
         );
     });
-
+    
     return (
+        
         <div>
-            <Transition timeline={algo} />
+           <Transition timeline={algo} />
+           <div className="link">
+                    <Link to ="/algo/DijkstraInfo"> Dijkstra's Algorithm </Link>
+                    <br/>
+                    <Link to="/algo/AstarInfo"> A* Algorithm </Link>
+                    <br/>
+                    <Link to="/algo/DFSInfo">Depth First Search Algorithm</Link>
+                    <br/>
+                    <Link to="/algo/BFSInfo"> Breadth First Search Algorithm </Link>
+            </div>
+            <Outlet />
             <div className="algo-image algo-overlay"></div>
             <div className="container-algo">
-                <h1 ref={algoh1}>Algorithm Page</h1>
+                <h1 ref={algoh1} >Algorithm Page</h1>
             </div>
+           
+           
         </div>
     );
 }
