@@ -4,10 +4,10 @@ import { BrowserRouter as Router, Routes, Route, Link, Outlet } from "react-rout
 import Main from "../pages/main";
 import Visualizer from "../pages/Visualizer";
 import Algo from "../pages/Algo";
-import DFSInfo  from "./DFSInfo";
-import  BFSInfo  from "./BFSInfo";
-import  AstarInfo  from "./AstarInfo";
-import  DijkstraInfo  from "./DijkstraInfo";
+import DFSInfo  from "../pages/DFSInfo";
+import  BFSInfo  from "../pages/BFSInfo";
+import  AstarInfo  from "../pages/AstarInfo";
+import  DijkstraInfo  from "../pages/DijkstraInfo";
 
 function Layout() {
     return (

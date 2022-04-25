@@ -37,10 +37,11 @@ function Algo () {
                     <Link to="/algo/BFSInfo"> Breadth First Search Algorithm </Link>
             </div>
             <Outlet />
-            <div className="algo-image algo-overlay"></div>
+            
             <div className="container-algo">
                 <h1 ref={algoh1} >Algorithm Page</h1>
             </div>
+            <div className="algo-image algo-overlay"></div>
            
            
         </div>
