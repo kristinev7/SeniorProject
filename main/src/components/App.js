@@ -40,7 +40,7 @@ function App() {
                     <Route index element={<Main />} />
                     <Route path="/visualizer" element={<Visualizer />} />
                     <Route path="/algo" element={<Algo />}>
-                        <Route path="DijkstraInfo" element ={<DijkstraInfo/>}/>
+                        <Route index element ={<DijkstraInfo/>}/>
                         <Route path ="AstarInfo" element={<AstarInfo/>}/>
                         <Route path = "DFSInfo" element={<DFSInfo/>} />
                         <Route path = "BFSInfo" element={<BFSInfo/>}/> 

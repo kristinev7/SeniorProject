@@ -122,7 +122,7 @@ main {
 }
 .Grid {
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     /* ???? */
     /* width: 720px;
     height: 600px; */

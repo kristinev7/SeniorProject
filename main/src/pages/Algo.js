@@ -28,7 +28,7 @@ function Algo () {
         <div>
            <Transition timeline={algo} />
            <div className="link">
-                    <Link to ="/algo/DijkstraInfo"> Dijkstra's Algorithm </Link>
+                    <Link to ="/algo"> Dijkstra's Algorithm </Link>
                     <br/>
                     <Link to="/algo/AstarInfo"> A* Algorithm </Link>
                     <br/>
