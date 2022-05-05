@@ -8,7 +8,7 @@ function DijkstraPage() {
     <div className="main">
         <Grid  container xs={12} spacing={2} direction="column" >
             <Grid item xs={6}>
-                 <ReactPlayer url = "https://www.youtube.com/embed/oDqjPvD54Ss"/>
+                 <ReactPlayer url = "https://www.youtube.com/embed/GazC3A4OQTE"/>
             </Grid>
        
         <div id="info">

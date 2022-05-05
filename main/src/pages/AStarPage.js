@@ -8,7 +8,7 @@ function AStarPage() {
     <div className="main">
         <Grid  container xs={12} spacing={2} direction="column" >
             <Grid item xs={6}>
-                 <ReactPlayer url = "https://www.youtube.com/embed/oDqjPvD54Ss"/>
+                 <ReactPlayer url = "https://www.youtube.com/embed/ySN5Wnu88nE"/>
             </Grid>
        
         <div id="info">
@@ -17,10 +17,10 @@ function AStarPage() {
                     <h1>A* Algorithm Information</h1>
                     Used in map vased applications, games for its positioning system, <br/>
                     string search applications, such as NLP (Natural Language Processing).<br/>
-                        - 3 parameters <br/>
+                        - Uses 3 parameters <br/>
                             1. g(n): The actual cost of traversal from initial state to the current state.<br/>
                             2. h(n): The estimated cost of traversal from the current state to the goal state.<br/>
-                                - uses heuristic function: euclidian distance or manhattan distance
+                                - uses heuristic function: euclidian distance or manhattan distance <br/>
                             3. f(n): The actual cost of traversal from the initial state to the goal state. <br/>
                                 - <b>f(n) = g(n) + h(n)</b> <br/>
                     <h2>Time and Space Complexity</h2>
