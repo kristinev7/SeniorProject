@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Navbar from "./Navbar";
-import Grid from "./Grid";
+import Navbar from "../components/Navbar";
+import Grid from "../components/Grid";
 import { FiAlertTriangle } from "react-icons/fi";
-import "./visualizer.css"
+import "../components/visualizer.css";
 
 export default function Visualizer() {
     const [visualize, setVisualize] = useState(false);

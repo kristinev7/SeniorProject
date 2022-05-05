@@ -1,15 +1,16 @@
-*{
+* {
     margin: 0;
     padding: 0;
-    font-family: 'Monument';
+    font-family: "Monument";
 }
-body{
+body {
     background-color: #161616;
-    overflow: hidden;
+    /* overflow: hidden; */
+    overflow-x: hidden;
     background-size: cover;
 }
-.header{
-    position: absolute;
+.header {
+    position: sticky;
     display: flex;
     height: 150px;
     width: 100%;
@@ -18,21 +19,21 @@ body{
     align-items: center;
     color: white;
 }
-.header .logo{
+.header .logo {
     margin-left: 30px;
     font-size: 30px;
     font-weight: bold;
-    font-family: 'Neutral Face';
+    font-family: "Neutral Face";
     color: rgb(113, 70, 168);
 }
-.header ul{
+.header ul {
     list-style: none;
     text-align: right;
     margin-right: 50px;
 }
-.header ul li .link{
+.header ul li .link {
     font-size: 20px;
-    font-family: 'Neutral Face';
+    font-family: "Neutral Face";
     color: white;
     font-weight: bold;
     margin-top: 5px;
