@@ -1,0 +1,57 @@
+/* body {
+    font-family: -apple-system, BlinkMacSystemFont, 
+    'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 
+    'Cantarell', 'Fira Sans', 'Droid Sans', 
+    'Helvetica Neue', sans-serif; 
+    -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+} */
+
+/* button {
+    font-size: 1.5rem;
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor:pointer;
+  } */
+
+  /* #DijkstraInfo {
+      background-color: lightgreen;
+      text-align: center;
+  } */
+
+  .info {
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+  }
+    
+  table {
+    border: 2px solid forestgreen;
+    width: 800px;
+    height: 500px;
+  }
+    
+  th {
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+  }
+    
+  td {
+    text-align: center;
+    border-right: 1px solid black;
+  }
+
+  #da {
+    width: 50px;
+  }
+
+ ul {
+      text-align: auto;
+      list-style-type:none;
+  }
+  li {
+    text-align: auto;
+  }
