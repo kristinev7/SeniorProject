@@ -28,20 +28,21 @@ function Algo () {
         <div>
            <Transition timeline={algo} />
            <div className="link">
-                    <Link to ="/algo"> Dijkstra's Algorithm </Link>
+                    <Link to="/algo"> Breadth First Search Algorithm </Link>
                     <br/>
-                    <Link to="/algo/AstarInfo"> A* Algorithm </Link>
+                    <Link to="/algo/DFSPage">Depth First Search Algorithm</Link>
                     <br/>
-                    <Link to="/algo/DFSInfo">Depth First Search Algorithm</Link>
+                    <Link to ="/algo/DijkstraPage"> Dijkstra's Algorithm </Link>
                     <br/>
-                    <Link to="/algo/BFSInfo"> Breadth First Search Algorithm </Link>
+                    <Link to="/algo/AstarPage"> A* Algorithm </Link>
+                    
             </div>
             <Outlet />
             
-            <div className="container-algo">
+            {/* <div className="container-algo">
                 <h1 ref={algoh1} >Algorithm Page</h1>
             </div>
-            <div className="algo-image algo-overlay"></div>
+            <div className="algo-image algo-overlay"></div> */}
            
            
         </div>

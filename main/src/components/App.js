@@ -4,11 +4,10 @@ import { BrowserRouter as Router, Routes, Route, Link, Outlet } from "react-rout
 import Main from "../pages/main";
 import Visualizer from "../pages/Visualizer";
 import Algo from "../pages/Algo";
-import DFSInfo  from "../pages/DFSInfo";
-import  BFSInfo  from "../pages/BFSInfo";
-import  AstarInfo  from "../pages/AstarInfo";
-import  DijkstraInfo  from "../pages/DijkstraInfo";
-
+import BFSPage from "../pages/BFSPage";
+import DFSPage from "../pages/DFSPage";
+import DijkstraPage from "../pages/DijkstraPage";
+import AStarPage from "../pages/AStarPage";
 function Layout() {
     return (
         <div className="App">
@@ -40,10 +39,10 @@ function App() {
                     <Route index element={<Main />} />
                     <Route path="/visualizer" element={<Visualizer />} />
                     <Route path="/algo" element={<Algo />}>
-                        <Route index element ={<DijkstraInfo/>}/>
-                        <Route path ="AstarInfo" element={<AstarInfo/>}/>
-                        <Route path = "DFSInfo" element={<DFSInfo/>} />
-                        <Route path = "BFSInfo" element={<BFSInfo/>}/> 
+                        <Route index element ={<BFSPage/>}/>
+                        <Route path ="DFSPage" element={<DFSPage/>}/>
+                        <Route path = "DijkstraPage" element={<DijkstraPage/>} />
+                        <Route path = "AStarPage" element={<AStarPage/>}/> 
                     </Route>
                 </Route>
             </Routes>
